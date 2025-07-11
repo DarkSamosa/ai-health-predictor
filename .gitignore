@@ -1,7 +1,7 @@
 # Node dependencies
 /frontend/node_modules/
 /backend/node_modules/
-/ML/node_modules/
+/ml/node_modules/
 
 /dist
 /.cache
@@ -13,7 +13,17 @@ yarn-error.log*
 
 # Mac system files
 .DS_Store
+Thumbs.db
 
 # IDE files
 .vscode/
 .idea/
+
+# python specific
+__pycache__/
+*.py[cod]
+
+# virtual environment
+venv/
+env/
+
