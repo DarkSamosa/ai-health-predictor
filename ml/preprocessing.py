@@ -1,6 +1,8 @@
 import pandas as pd
-
-df_gwas = pd.read_excel(r"C:\Users\kavit\Desktop\ml mvp\data\full_gwas_summary_stats.csv")
+import os
+current_dir = os.path.dirname(os.path.abspath(__file__))
+gwas_path = os.path.join(current_dir, 'data', 'full_gwas_summary_stats.csv')
+df_gwas = pd.read_excel(gwas_path)
 
 def prs_data(df):
     diseases = df_gwas["Disease"].unique()
