@@ -5,7 +5,6 @@ df_gwas = pd.read_excel(r"C:\Users\kavit\Desktop\ml mvp\data\full_gwas_summary_s
 def prs_data(df):
     diseases = df_gwas["Disease"].unique()
     prs_scores = pd.DataFrame()
-    prs_scores["Person_ID"] = df["Person_ID"]
 
     for disease in diseases:
        betas = df_gwas[df_gwas["Disease"] == disease].set_index("SNP")["Beta"]
