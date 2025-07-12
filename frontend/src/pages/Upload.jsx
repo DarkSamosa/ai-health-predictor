@@ -29,9 +29,29 @@ function Upload() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    navigate("/results");
+    const formDataToSend = new FormData();
+    formDataToSend.append("file", fileInputRef.current.files[0]);
+
+    try {
+      const response = await fetch("http://localhost:8000/predict", {
+        method: "POST",
+        body: formDataToSend,
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem("predictionResults", JSON.stringify(data));
+        navigate("/results");
+      } else {
+        alert("Prediction failed: " + data.error);
+      }
+    } catch (err) {
+      console.error("Network error:", err);
+      alert("Prediction failed due to network error.");
+    }
   };
 
   return (
@@ -60,7 +80,7 @@ function Upload() {
         style={{ display: "flex", flexDirection: "column", gap: "1.2rem" }}
       >
         <label style={{ fontWeight: "500" }}>
-          DNA Report (CSV or PDF)
+          DNA Report (CSV or Excel)
           <div
             style={{
               display: "flex",
@@ -89,7 +109,7 @@ function Upload() {
           </div>
           <input
             type="file"
-            accept=".csv,.pdf"
+            accept=".csv,.xlsx"
             ref={fileInputRef}
             onChange={handleFileChange}
             required
@@ -97,34 +117,29 @@ function Upload() {
           />
         </label>
 
-        {[
-          { name: "father", label: "Father's Disease History" },
-          { name: "mother", label: "Mother's Disease History" },
-          { name: "paternalGrandfather", label: "Paternal Grandfather (optional)" },
-          { name: "paternalGrandmother", label: "Paternal Grandmother (optional)" },
-          { name: "maternalGrandfather", label: "Maternal Grandfather (optional)" },
-          { name: "maternalGrandmother", label: "Maternal Grandmother (optional)" },
-        ].map(({ name, label }) => (
-          <label key={name} style={{ fontWeight: "500" }}>
-            {label}
-            <input
-              type="text"
-              name={name}
-              value={formData[name]}
-              onChange={handleChange}
-              placeholder={label}
-              required={name === "father" || name === "mother"}
-              style={{
-                marginTop: "0.4rem",
-                padding: "0.6rem",
-                borderRadius: "6px",
-                border: "1px solid #ccc",
-                width: "100%",
-                backgroundColor: "#fff",
-              }}
-            />
-          </label>
-        ))}
+        {["father", "mother", "paternalGrandfather", "paternalGrandmother", "maternalGrandfather", "maternalGrandmother"].map(
+          (name) => (
+            <label key={name} style={{ fontWeight: "500" }}>
+              {name.replace(/([A-Z])/g, " $1").replace(/^\w/, (c) => c.toUpperCase())}
+              <input
+                type="text"
+                name={name}
+                value={formData[name]}
+                onChange={handleChange}
+                placeholder={name}
+                required={name === "father" || name === "mother"}
+                style={{
+                  marginTop: "0.4rem",
+                  padding: "0.6rem",
+                  borderRadius: "6px",
+                  border: "1px solid #ccc",
+                  width: "100%",
+                  backgroundColor: "#fff",
+                }}
+              />
+            </label>
+          )
+        )}
 
         <button
           type="submit"
