@@ -25,9 +25,7 @@ def predict():
         for i, disease in enumerate(disease_name):
             prob_df[f"{disease}_status"] = [f"{round(float(p[1])*100, 2)}% risk" for p in probs[i]]
 
-        prob_df['Person_ID'] = df['Person_ID'].values
-
-        cols = ['Person_ID'] + disease_name
+        cols = disease_name
         return jsonify(prob_df.to_dict(orient = 'records'))
     
     except Exception as e:
